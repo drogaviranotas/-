@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String          @id @default(cuid())
+  email            String          @unique
+  passwordHash     String
+  plan             String          @default("FREE")
+  stripeCustomerId String?
+  createdAt        DateTime        @default(now())
+  sessions         Session[]
+  leads            Lead[]
+  searches         SearchLog[]
+  resets           PasswordReset[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Lead {
+  id            String      @id @default(cuid())
+  userId        String
+  businessId    String
+  source        String
+  sourceRef     String?
+  snapshot      Json
+  status        String      @default("NEW")
+  notes         String      @default("")
+  nextAction    String?
+  nextActionAt  DateTime?
+  lastContactAt DateTime?
+  valueCents    Int?
+  tags          String[]
+  list          String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events        LeadEvent[]
+
+  @@unique([userId, businessId])
+}
+
+model LeadEvent {
+  id        String   @id @default(cuid())
+  leadId    String
+  changes   Json
+  createdAt DateTime @default(now())
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model SearchLog {
+  id        String   @id @default(cuid())
+  userId    String
+  location  String
+  category  String
+  count     Int
+  favorite  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RateHit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+}

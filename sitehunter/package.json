@@ -1,0 +1,37 @@
+{
+  "name": "sitehunter",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "setup": "prisma generate && prisma db push",
+    "vercel-build": "prisma generate && next build"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@prisma/client": "^6.0.0",
+    "leaflet": "^1.9.4",
+    "exceljs": "^4.4.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "prisma": "^6.0.0",
+    "@types/leaflet": "^1.9.12",
+    "@tailwindcss/postcss": "^4.0.0",
+    "postcss": "^8.4.0"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}
